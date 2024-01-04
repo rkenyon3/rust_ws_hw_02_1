@@ -1,4 +1,3 @@
-use std::collections::btree_map::Values;
 use std::env::args;
 use std::error::Error;
 use std::fs;
@@ -73,17 +72,18 @@ impl TryFrom<&str> for Line {
     }
 }
 
-fn file_to_lines(file_name: &str) -> Result<Vec<Line>, Box<dyn std::error::Error>>{
+fn file_to_lines(file_name: String) -> Result<Vec<Line>, Box<dyn std::error::Error>> {
     let text = fs::read_to_string(file_name)?;
 
-    text.lines().map(|l| Line::try_from(l)).collect()
+    text.lines().map(Line::try_from).collect()
 }
 
-
 fn main() -> Result<(), Box<dyn Error>> {
-    // let file_name = args().nth(1).ok_or("Please provide a file name")?;
+    let file_name = args().nth(1).ok_or("Please provide a file name")?;
 
-    // let lines = fs::read_to_string(file_name)?;
+    let that_vector = file_to_lines(file_name);
+
+    println!("{:?}", that_vector);
 
     Ok(())
 }
