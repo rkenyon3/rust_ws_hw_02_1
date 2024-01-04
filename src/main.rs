@@ -32,7 +32,7 @@ impl NameAndNumberData {
     }
 }
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 struct ScoreStruct {
     running_total: i32,
     score_count: i32,
@@ -109,6 +109,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .add_score(line.number),
         }
     }
+
+    println!("{:?}", test_scores_map);
 
     Ok(())
 }
