@@ -61,7 +61,7 @@ impl TryFrom<&str> for Line {
     type Error = Box<dyn Error>;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        if value.contains(":") {
+        if value.contains(':') {
             let parts: Vec<&str> = value.split(':').collect();
             let name = parts[0];
             let number: i32 = parts[1].trim().parse()?;
@@ -72,6 +72,13 @@ impl TryFrom<&str> for Line {
         }
     }
 }
+
+fn file_to_lines(file_name: &str) -> Result<Vec<Line>, Box<dyn std::error::Error>>{
+    let text = fs::read_to_string(file_name)?;
+
+    text.lines().map(|l| Line::try_from(l)).collect()
+}
+
 
 fn main() -> Result<(), Box<dyn Error>> {
     // let file_name = args().nth(1).ok_or("Please provide a file name")?;
