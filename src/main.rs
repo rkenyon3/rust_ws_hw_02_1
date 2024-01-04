@@ -36,26 +36,6 @@ enum Line {
     NameAndNumber(NameAndNumberData),
 }
 
-impl TryFrom<&str> for NameAndNumberData {
-    type Error = Box<dyn Error>;
-
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        let parts: Vec<&str> = value.split(':').collect();
-        let name = parts[0];
-        let number: i32 = parts[1].trim().parse()?;
-
-        Ok(NameAndNumberData::new(name, number))
-    }
-}
-
-impl TryFrom<&str> for NameOnly {
-    type Error = Box<dyn Error>;
-
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        Ok(NameOnly::new(value))
-    }
-}
-
 impl TryFrom<&str> for Line {
     type Error = Box<dyn Error>;
 
