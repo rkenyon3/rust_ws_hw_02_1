@@ -1,9 +1,11 @@
+use std::collections::HashMap;
+use std::default::Default;
 use std::env::args;
 use std::error::Error;
 use std::fs;
 
 #[derive(Debug)]
-struct NameOnly {
+pub struct NameOnly {
     name: String,
 }
 
@@ -16,7 +18,7 @@ impl NameOnly {
 }
 
 #[derive(Debug)]
-struct NameAndNumberData {
+pub struct NameAndNumberData {
     name: String,
     number: i32,
 }
@@ -30,8 +32,38 @@ impl NameAndNumberData {
     }
 }
 
+#[derive(Default)]
+struct ScoreStruct {
+    running_total: i32,
+    score_count: i32,
+    missed_test_count: i32,
+}
+
+impl ScoreStruct {
+    pub fn add_score(&mut self, new_score: i32) {
+        self.running_total += new_score;
+        self.score_count += 1;
+    }
+
+    pub fn add_missed_test(&mut self) {
+        self.missed_test_count += 1;
+    }
+
+    pub fn running_total(&self) -> i32 {
+        self.running_total
+    }
+
+    pub fn score_count(&self) -> i32 {
+        self.score_count
+    }
+
+    pub fn missed_test_count(&self) -> i32 {
+        self.missed_test_count
+    }
+}
+
 #[derive(Debug)]
-enum Line {
+pub enum Line {
     NameOnly(NameOnly),
     NameAndNumber(NameAndNumberData),
 }
@@ -61,9 +93,22 @@ fn file_to_lines(file_name: String) -> Result<Vec<Line>, Box<dyn std::error::Err
 fn main() -> Result<(), Box<dyn Error>> {
     let file_name = args().nth(1).ok_or("Please provide a file name")?;
 
-    let that_vector = file_to_lines(file_name);
+    let parsed_lines = file_to_lines(file_name)?;
 
-    println!("{:?}", that_vector);
+    let mut test_scores_map: HashMap<String, ScoreStruct> = HashMap::new();
+
+    for line in parsed_lines {
+        match (line) {
+            Line::NameOnly(line) => test_scores_map
+                .entry(line.name)
+                .or_default()
+                .add_missed_test(),
+            Line::NameAndNumber(line) => test_scores_map
+                .entry(line.name)
+                .or_default()
+                .add_score(line.number),
+        }
+    }
 
     Ok(())
 }
