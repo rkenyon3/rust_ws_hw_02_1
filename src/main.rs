@@ -1,3 +1,4 @@
+use std::collections::btree_map::Values;
 use std::env::args;
 use std::error::Error;
 use std::fs;
@@ -7,9 +8,11 @@ struct NameOnly {
     name: String,
 }
 
-impl NameOnly{
-    pub fn new(name: &str) -> Self{
-        Self { name:name.to_owned() }
+impl NameOnly {
+    pub fn new(name: &str) -> Self {
+        Self {
+            name: name.to_owned(),
+        }
     }
 }
 
@@ -20,10 +23,10 @@ struct NameAndNumberData {
 }
 
 impl NameAndNumberData {
-    pub fn new(name: &str, number: i32) -> Self{
-        Self{
-            name:name.to_owned(), 
-            number
+    pub fn new(name: &str, number: i32) -> Self {
+        Self {
+            name: name.to_owned(),
+            number,
         }
     }
 }
@@ -34,27 +37,39 @@ enum Line {
     NameAndNumber(NameAndNumberData),
 }
 
-impl TryFrom<&str> for NameAndNumberData{
+impl TryFrom<&str> for NameAndNumberData {
     type Error = Box<dyn Error>;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-    
-        let parts: Vec<&str> = value.split(":").collect();
+        let parts: Vec<&str> = value.split(':').collect();
         let name = parts[0];
         let number: i32 = parts[1].trim().parse()?;
 
         Ok(NameAndNumberData::new(name, number))
-        
     }
 }
 
-impl TryFrom<&str> for NameOnly{
+impl TryFrom<&str> for NameOnly {
     type Error = Box<dyn Error>;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-    
         Ok(NameOnly::new(value))
-        
+    }
+}
+
+impl TryFrom<&str> for Line {
+    type Error = Box<dyn Error>;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        if value.contains(":") {
+            let parts: Vec<&str> = value.split(':').collect();
+            let name = parts[0];
+            let number: i32 = parts[1].trim().parse()?;
+            let name_and_num = NameAndNumberData::new(name, number);
+            Ok(Line::NameAndNumber(name_and_num))
+        } else {
+            Ok(Line::NameOnly(NameOnly::new(value)))
+        }
     }
 }
 
@@ -62,8 +77,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     // let file_name = args().nth(1).ok_or("Please provide a file name")?;
 
     // let lines = fs::read_to_string(file_name)?;
-
-
 
     Ok(())
 }
