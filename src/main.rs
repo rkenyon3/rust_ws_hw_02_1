@@ -98,7 +98,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut test_scores_map: HashMap<String, ScoreStruct> = HashMap::new();
 
     for line in parsed_lines {
-        match (line) {
+        match line {
             Line::NameOnly(line) => test_scores_map
                 .entry(line.name)
                 .or_default()
