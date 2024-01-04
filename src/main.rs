@@ -3,11 +3,11 @@ use std::error::Error;
 use std::fs;
 
 #[derive(Debug)]
-struct NameData {
+struct NameOnly {
     name: String,
 }
 
-impl NameData{
+impl NameOnly{
     pub fn new(name: &str) -> Self{
         Self { name:name.to_owned() }
     }
@@ -30,21 +30,31 @@ impl NameAndNumberData {
 
 #[derive(Debug)]
 enum Line {
-    NameOnly(NameData),
+    NameOnly(NameOnly),
     NameAndNumber(NameAndNumberData),
 }
 
-impl TryFrom<&str> for Line{
-    type Error = Box<dyn std::error::Error>;
+impl TryFrom<&str> for NameAndNumberData{
+    type Error = Box<dyn Error>;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        if value.contains(":") {
-            let parts: Vec<&str> = value.split(":").collect();
-            let name = parts.get(0).;
-            let number: i32 = parts.nth(1).parse()?;
+    
+        let parts: Vec<&str> = value.split(":").collect();
+        let name = parts[0];
+        let number: i32 = parts[1].trim().parse()?;
 
-            NameAndNumberData::new(name, number)
-        }
+        Ok(NameAndNumberData::new(name, number))
+        
+    }
+}
+
+impl TryFrom<&str> for NameOnly{
+    type Error = Box<dyn Error>;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    
+        Ok(NameOnly::new(value))
+        
     }
 }
 
