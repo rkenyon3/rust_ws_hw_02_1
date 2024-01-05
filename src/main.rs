@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::default::Default;
 use std::env::args;
 use std::error::Error;
+use std::fmt::Display;
 use std::fs;
 
 #[derive(Debug)]
@@ -59,6 +60,28 @@ impl ScoreStruct {
 
     pub fn missed_test_count(&self) -> i32 {
         self.missed_test_count
+    }
+}
+
+fn test_word(test_count: i32) -> &'static str {
+    if test_count == 0 {
+        "test"
+    } else {
+        "tests"
+    }
+}
+
+impl Display for ScoreStruct {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{} {}, with a total score of {}. They missed {} {}",
+            self.score_count,
+            test_word(self.score_count),
+            self.running_total,
+            self.missed_test_count,
+            test_word(self.missed_test_count)
+        )
     }
 }
 
