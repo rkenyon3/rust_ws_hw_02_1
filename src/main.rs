@@ -49,18 +49,6 @@ impl ScoreStruct {
     pub fn add_missed_test(&mut self) {
         self.missed_test_count += 1;
     }
-
-    pub fn running_total(&self) -> i32 {
-        self.running_total
-    }
-
-    pub fn score_count(&self) -> i32 {
-        self.score_count
-    }
-
-    pub fn missed_test_count(&self) -> i32 {
-        self.missed_test_count
-    }
 }
 
 fn test_word(test_count: i32) -> &'static str {
