@@ -133,7 +133,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    println!("{:?}", test_scores_map);
+    for (person, scores) in test_scores_map.iter() {
+        println!("{} took {}", person, scores);
+    }
 
     Ok(())
 }
